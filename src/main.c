@@ -9,6 +9,7 @@
 #include <task.h>
 
 #include "tkjhat/sdk.h"
+#include "state.h"
 #include "interface.h"
 
 // Default stack size for the tasks. It can be reduced to 1024 if task is not using lot of memory.
@@ -34,6 +35,9 @@ int main() {
         sleep_ms(10);
     }*/ 
     init_hat_sdk();
+
+    state_init();
+
     sleep_ms(300); //Wait some time so initialization of USB and hat is done.
 
 
