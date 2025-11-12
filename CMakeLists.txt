@@ -117,7 +117,6 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 add_executable(${MAIN_TARGET}
-    src/main.c
     ${SRC_FILES}
 )
 
