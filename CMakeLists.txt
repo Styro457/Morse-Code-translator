@@ -110,9 +110,24 @@ add_subdirectory(examples/hello_serial_bidirectional_client)
 
 # Add the source files to be compiled
 # If you add the headers in a different directory, you should use: target_include_directories
+
+
+file(GLOB_RECURSE SRC_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
+)
+
 add_executable(${MAIN_TARGET}
     src/main.c
+    ${SRC_FILES}
 )
+
+target_include_directories(${MAIN_TARGET}
+    PRIVATE
+        src
+)
+# add_executable(${MAIN_TARGET}
+#     src/main.c
+# )
 
 # Links. Add all libraries that application is using. It must at least use the pico_stdlib
 # In addition, for the course project you are using at least:
