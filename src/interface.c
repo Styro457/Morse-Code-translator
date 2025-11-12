@@ -1,12 +1,29 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <string.h>
 
 #include "tkjhat/sdk.h"
 #include "interface.h"
+#include "state.h"
 
 #define DEFAULT_I2C_SDA_PIN   12
 #define DEFAULT_I2C_SCL_PIN   13
+
+#define TEXT_X                 8
+#define TEXT_SELECTED_X       36
+#define TEXT_Y_MUT             16
+#define TEXT_SCALE             2
+
+static char menu[3][12] = {
+    "UART",
+    "WiFi",
+    "Settings"
+};
+
+static uint8_t selected_menu = 0;
+
+static void display_menu();
 
 void display_task(void *arg) {
     (void)arg;
@@ -15,12 +32,26 @@ void display_task(void *arg) {
     printf("Initializing display\n");
 
     while(1) {
-        
-        clear_display();
-        char buf[5]; //Store a number of maximum 5 figures 
-        sprintf(buf, "Hi!");
-        write_text(buf);
-        vTaskDelay(pdMS_TO_TICKS(4000));
+        if(get_status() == MAIN_MENU) {
+            display_menu();
+        }
+    }
+}
+
+static void display_menu() {
+    clear_display();
+    uint32_t x = TEXT_X;
+    char message[16];
+    for(uint8_t i = 0; i < 3; i++) {
+        message[0] = '\0';
+        if(i == selected_menu) {
+            strcat(message, "> ");
+        }
+        strcat(message, menu[i]);
+        ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, TEXT_SCALE, message);
     }
 
+    // Update the display
+    ssd1306_show(get_display());
+    vTaskDelay(pdMS_TO_TICKS(4000));
 }
