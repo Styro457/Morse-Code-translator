@@ -1,0 +1,5 @@
+﻿build
+!.vscode/*
+.DS_Store
+Thumbs.db
+libs/TKJHAT/docs/out/
