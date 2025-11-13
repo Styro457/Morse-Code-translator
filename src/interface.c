@@ -41,6 +41,9 @@ void display_task(void *arg) {
             if(get_status() == MAIN_MENU) {
                 display_menu();
             }
+            else {
+                clear_display();
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(50));
     }
@@ -64,6 +67,26 @@ static void display_menu() {
 }
 
 void button_press(uint8_t button) {
+    if(button == 1) {
+        if(get_status() == MAIN_MENU) {
+            selected_menu = (selected_menu+1)%3;
+        }
+        else {
+            set_status(MAIN_MENU);
+        }
+    }
+    else {
+        switch(selected_menu) {
+            case 0:
+                set_status(RECEIVING_DATA);
+                break;
+            case 1:
+                set_status(WAITING_INPUT);
+                break;
+            default:
+                set_status(MAIN_MENU);
+                break;
+        }
+    }
     update = true;
-    selected_menu = (selected_menu+1)%3;
 }
