@@ -39,7 +39,9 @@ void buzzer_task(void *arg) {
                     buzzer_play_tone (600, 200);
                     break;
                 case MESSAGE_SENT:
-
+                    buzzer_play_tone (800, 50);
+                    vTaskDelay(pdMS_TO_TICKS(80));
+                    buzzer_play_tone (300, 100);
                     break;
                 case MUSIC:
                     for (int i=0 ; i<10; i++){
