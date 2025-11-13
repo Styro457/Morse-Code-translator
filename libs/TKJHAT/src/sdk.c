@@ -342,6 +342,10 @@ int get_microphone_samples(int16_t* buffer, size_t samples) {
     ssd1306_clear(&disp);
 }
 
+ssd1306_t* get_display() {
+    return &disp;
+}
+
 
 void write_text_xy(int16_t x0, int16_t y0, const char *text) {
     if (!text) return;

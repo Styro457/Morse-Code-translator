@@ -112,6 +112,7 @@ SOFTWARE.
 
 #include "pdm_microphone.h"   // pdm_samples_ready_handler_t
 #include "pins.h"
+#include "ssd1306.h"
 
 /* =========================
  *  CONSTANTS AND MACROS
@@ -837,6 +838,9 @@ int get_microphone_samples(int16_t *buffer, size_t samples);
  * @post The display is powered on and ready to draw.
  */
 void init_display(void);
+
+
+ssd1306_t* get_display();
 
 /**
  * @brief Write a text string centered-ish on the display.
