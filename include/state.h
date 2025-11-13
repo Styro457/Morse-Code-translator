@@ -6,9 +6,8 @@
 
 typedef enum {
     MAIN_MENU,
-    RECEIVING_DATA,
-    SENDING_DATA,
-    WAITING_INPUT
+    UART,
+    WIFI
 } status;
 
 typedef struct {

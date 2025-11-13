@@ -29,6 +29,7 @@ static volatile uint8_t selected_menu = 0;
 static bool update = true;
 
 static void display_menu();
+static void display_chat();
 
 void display_task(void *arg) {
     (void)arg;
@@ -39,12 +40,19 @@ void display_task(void *arg) {
     while(1) {
         if(update) {
             update = false;
-            if(get_status() == MAIN_MENU) {
-                display_menu();
+            switch(get_status()) {
+                case MAIN_MENU:
+                    display_menu();
+                    break;
+                case UART:
+                    display_chat();
+                    break;
+                default:
+                    clear_display();
+                    break;
             }
-            else {
-                clear_display();
-            }
+            //Update the display
+            ssd1306_show(get_display());
         }
         vTaskDelay(pdMS_TO_TICKS(50));
     }
@@ -62,8 +70,12 @@ static void display_menu() {
         strcat(message, menu[i]);
         ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, TEXT_SCALE, message);
     }
+}
 
-    // Update the display
+static void display_chat() {
+    clear_display();
+    ssd1306_draw_string(get_display(), 0, 0, TEXT_SCALE, "abc");
+    ssd1306_draw_empty_square(get_display(), 0, 50, 128, 30);
     ssd1306_show(get_display());
 }
 
@@ -79,7 +91,7 @@ void button_press(uint8_t button) {
     else {
         switch(selected_menu) {
             case 0:
-                //set_status(RECEIVING_DATA);
+                set_status(UART);
                 play_sound(MESSAGE_RECEIVED);
                 break;
             case 1:
