@@ -113,11 +113,11 @@ add_subdirectory(examples/hello_serial_bidirectional_client)
 
 add_executable(${MAIN_TARGET}
     src/main.c
+    src/uart.c
     src/buzzer.c
     src/state.c
     src/interface.c
     src/buttons.c
-    src/uart.c
 )
 
 target_include_directories(${MAIN_TARGET}
