@@ -9,8 +9,10 @@
 #include <task.h>
 
 #include "tkjhat/sdk.h"
+
 #include "state.h"
 #include "interface.h"
+#include "buttons.h"
 
 // Default stack size for the tasks. It can be reduced to 1024 if task is not using lot of memory.
 #define DEFAULT_STACK_SIZE 2048 
@@ -55,6 +57,7 @@ int main() {
         return 0;
     }
 
+    // Display task
     result = xTaskCreate(display_task,
         "display",
         DEFAULT_STACK_SIZE,
@@ -65,6 +68,20 @@ int main() {
 
     if (result != pdPASS) {
         printf("Display Task creation failed \n");
+        return 0;
+    }
+
+    // Button task
+    result = xTaskCreate(button_task,
+        "button",
+        DEFAULT_STACK_SIZE,
+        NULL,
+        1,
+        &displayTask
+    );
+
+    if (result != pdPASS) {
+        printf("Button Task creation failed \n");
         return 0;
     }
 

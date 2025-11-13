@@ -1,7 +1,9 @@
 #include <stdio.h>
-#include <FreeRTOS.h>
-#include <task.h>
 #include <string.h>
+
+#include <FreeRTOS.h>
+#include <semphr.h>
+#include <task.h>
 
 #include "tkjhat/sdk.h"
 #include "interface.h"
@@ -21,7 +23,9 @@ static char menu[3][12] = {
     "Settings"
 };
 
-static uint8_t selected_menu = 0;
+static volatile uint8_t selected_menu = 0;
+
+static bool update = true;
 
 static void display_menu();
 
@@ -32,9 +36,13 @@ void display_task(void *arg) {
     printf("Initializing display\n");
 
     while(1) {
-        if(get_status() == MAIN_MENU) {
-            display_menu();
+        if(update) {
+            update = false;
+            if(get_status() == MAIN_MENU) {
+                display_menu();
+            }
         }
+        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
 
@@ -53,5 +61,9 @@ static void display_menu() {
 
     // Update the display
     ssd1306_show(get_display());
-    vTaskDelay(pdMS_TO_TICKS(4000));
+}
+
+void button_press(uint8_t button) {
+    update = true;
+    selected_menu = (selected_menu+1)%3;
 }
