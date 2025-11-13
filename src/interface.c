@@ -8,6 +8,7 @@
 #include "tkjhat/sdk.h"
 #include "interface.h"
 #include "state.h"
+#include "buzzer.h"
 
 #define DEFAULT_I2C_SDA_PIN   12
 #define DEFAULT_I2C_SCL_PIN   13
@@ -78,13 +79,16 @@ void button_press(uint8_t button) {
     else {
         switch(selected_menu) {
             case 0:
-                set_status(RECEIVING_DATA);
+                //set_status(RECEIVING_DATA);
+                play_sound(MESSAGE_RECEIVED);
                 break;
             case 1:
-                set_status(WAITING_INPUT);
+                //set_status(WAITING_INPUT);
+                play_sound(MESSAGE_SENT);
                 break;
             default:
-                set_status(MAIN_MENU);
+                //set_status(MAIN_MENU);
+                play_sound(MUSIC);
                 break;
         }
     }
