@@ -73,6 +73,7 @@ void imu_task(void *pvParameters) {
                             addCharToMessage(' ');
                         }
                         else {
+                            addCharToMessage(0);
                             //TODO: Send message
                         }
                     }
