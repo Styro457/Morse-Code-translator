@@ -17,7 +17,9 @@
 void send_message() {
   printf("%s", g_state.currentMessage);
   strcpy(g_state.messageHistory[g_state.messageHistorySize].message, g_state.currentMessage);
+  g_state.messageHistorySize++;
   g_state.currentMessage[0] = 0;
+  g_state.currentMessageSize = 0;
 }
 
 void receive_task(void *arg) {
