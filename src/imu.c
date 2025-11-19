@@ -6,11 +6,14 @@
 
 #include "tkjhat/sdk.h"
 #include "buzzer.h"
+#include "state.h"
 
 #define BUFFER_SIZE 100
 #define MOTION_TIME_MS 100
 #define MOTION_MAGNITUDE 100
 #define MOTION_STILL 50
+
+static void addCharToMessage(char character);
 
 void imu_task(void *pvParameters) {
     (void)pvParameters;
@@ -49,7 +52,7 @@ void imu_task(void *pvParameters) {
 
                 // Check if a movememnt was detected and if its longer than MOTION_TIME_MS
                 if(motion_time[0] != 0 && now - motion_time[0] >= pdMS_TO_TICKS(MOTION_TIME_MS)) {
-                    play_sound(command[0] == 1 ? MESSAGE_RECEIVED : MESSAGE_SENT);
+                    addCharToMessage(command[0] == 1 ? '-' : '.');
                 }
                 motion_time[0] = 0;
 
@@ -63,10 +66,15 @@ void imu_task(void *pvParameters) {
                     command[1] = 2;
                 }
                 else if (-MOTION_STILL < gz && gz < MOTION_STILL) {
-                    
+
                     // Check if a movememnt was detected and if its longer than MOTION_TIME_MS
                     if(motion_time[1] != 0 && now - motion_time[1] >= pdMS_TO_TICKS(MOTION_TIME_MS)) {
-                        play_sound(MUSIC);
+                        if(command[1] == 1) {
+                            addCharToMessage(' ');
+                        }
+                        else {
+                            //TODO: Send message
+                        }
                     }
                     motion_time[1] = 0;
                 }
@@ -77,5 +85,9 @@ void imu_task(void *pvParameters) {
         }
         vTaskDelay(pdMS_TO_TICKS(250));
     }
+}
 
+static void addCharToMessage(char character) {
+    g_state.currentMessage.message[g_state.currentMessage.message_size] = character;
+    g_state.currentMessage.message_size++;
 }
