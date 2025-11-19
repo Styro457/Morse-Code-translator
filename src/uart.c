@@ -117,36 +117,3 @@ void receive_task(void *arg) {
     }*/
   }
 }
-
-/*
-int main() {
-    stdio_init_all();
-    init_hat_sdk();
-    sleep_ms(300); //Wait some time so initialization of USB and hat is done.
-    init_button1();
-    init_button2();
-    init_led();
-    gpio_set_irq_enabled_with_callback(BUTTON1, GPIO_IRQ_EDGE_RISE, true,
-btn_fxn); gpio_set_irq_enabled(BUTTON2, GPIO_IRQ_EDGE_RISE, true);
-
-    TaskHandle_t hPrintTask, hReceiveTask;
-
-    BaseType_t result = xTaskCreate(print_task,  // (en) Task function
-                "print",              // (en) Name of the task
-                DEFAULT_STACK_SIZE,   // (en) Size of the stack for this task
-(in words). Generally 1024 or 2048 NULL,                 // (en) Arguments of
-the task 2,                    // (en) Priority of this task &hPrintTask); //
-(en) A handle to control the execution of this task result =
-xTaskCreate(receive_task,  // (en) Task function "receive",             // (en)
-Name of the task DEFAULT_STACK_SIZE,   // (en) Size of the stack for this task
-(in words). Generally 1024 or 2048 NULL,                 // (en) Arguments of
-the task 2,                    // (en) Priority of this task &hReceiveTask); //
-(en) A handle to control the execution of this task
-
-    // Start the scheduler (never returns)
-    vTaskStartScheduler();
-
-
-    return 0;
-}
-*/
