@@ -34,8 +34,8 @@ void buzzer_task(void *arg) {
         if (xQueueReceive(queue, &nextSound, portMAX_DELAY) == pdPASS) {
             switch (nextSound) {
                 case MESSAGE_RECEIVED:
-                    buzzer_play_tone (400, 50);
-                    vTaskDelay(pdMS_TO_TICKS(100));
+                    buzzer_play_tone (400, 200);
+                    vTaskDelay(pdMS_TO_TICKS(200));
                     buzzer_play_tone (600, 200);
                     break;
                 case MESSAGE_SENT:
