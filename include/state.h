@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define MSG_BUFFER_SIZE 256
+#define MSG_LIST_SIZE 16
+
 typedef enum {
     MAIN_MENU,
     UART,
@@ -11,8 +14,15 @@ typedef enum {
 } status;
 
 typedef struct {
+    uint8_t sender;
+    int message_size;
+    char message[MSG_BUFFER_SIZE];
+} Message;
+
+typedef struct {
     status g_status;
-    char current_message[10];
+    Message currentMessage;
+    Message messageHistory[MSG_LIST_SIZE];
 } state;
 
 // Global variable for the state
