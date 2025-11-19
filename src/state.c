@@ -10,6 +10,7 @@ static SemaphoreHandle_t state_mutex = NULL;
 void state_init() {
     //state_mutex = xSemaphoreCreateMutex();
     g_state.g_status = MAIN_MENU;
+    g_state.messageHistorySize = 0;
 }
 
 

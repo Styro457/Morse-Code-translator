@@ -23,6 +23,7 @@ typedef struct {
     status g_status;
     Message currentMessage;
     Message messageHistory[MSG_LIST_SIZE];
+    int messageHistorySize;
 } state;
 
 // Global variable for the state
