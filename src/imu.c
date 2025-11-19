@@ -1,3 +1,5 @@
+#include "imu.h"
+
 #include <pico/stdlib.h>
 #include <stdio.h>
 
@@ -8,6 +10,7 @@
 #include "buzzer.h"
 #include "state.h"
 #include "interface.h"
+#include "uart.h"
 
 #define BUFFER_SIZE 100
 #define MOTION_TIME_MS 100
@@ -87,7 +90,8 @@ void imu_task(void *pvParameters) {
                             add_char_to_message(' ');
                         }
                         else {
-                            //TODO: Send message
+                            send_message();
+                            update_interface();
                         }
                     }
                     motion_time[1] = 0;
