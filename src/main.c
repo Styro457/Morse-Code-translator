@@ -14,6 +14,7 @@
 
 #include "buttons.h"
 #include "interface.h"
+#include "imu.h"
 #include "state.h"
 
 // Default stack size for the tasks. It can be reduced to 1024 if task is not
@@ -40,13 +41,17 @@ int main() {
   /*while (!stdio_usb_connected()){
       sleep_ms(10);
   }*/
+  while (!stdio_usb_connected()){
+    sleep_ms(10);
+  }
   init_hat_sdk();
+  
 
   state_init();
 
   sleep_ms(300); // Wait some time so initialization of USB and hat is done.
 
-  TaskHandle_t myExampleTask, displayTask, buzzerTask, printTask, receiveTask;
+  TaskHandle_t displayTask, buzzerTask, printTask, receiveTask, imuTask;
   // Create the tasks with xTaskCreate
 
   // Buzzer task
@@ -75,11 +80,19 @@ int main() {
     return 0;
   }
 
-  result = xTaskCreate(receive_task, "receiveTask", DEFAULT_STACK_SIZE, NULL, 2,
+  result = xTaskCreate(receive_task, "receiveTask", DEFAULT_STACK_SIZE, NULL, 5,
                        &receiveTask);
 
   if (result != pdPASS) {
     printf("Receive Task creation failed \n");
+    return 0;
+  }
+
+  result = xTaskCreate(imu_task, "imuTask", DEFAULT_STACK_SIZE, NULL, 4,
+                       &imuTask);
+
+  if (result != pdPASS) {
+    printf("IMU Task creation failed \n");
     return 0;
   }
 

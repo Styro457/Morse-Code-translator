@@ -117,6 +117,7 @@ add_executable(${MAIN_TARGET}
     src/buzzer.c
     src/state.c
     src/interface.c
+    src/imu.c
     src/buttons.c
 )
 
