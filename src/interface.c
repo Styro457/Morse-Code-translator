@@ -78,16 +78,16 @@ static void display_menu() {
 
 static void display_chat() {
     clear_display();
-    for(int i = 0; i < state.messageHistorySize; i++) {
-        if(state.messageHistory[i].sender == 0) {
-            ssd1306_draw_string(get_display(), 16, i*TEXT_SMALL_Y_MUT, 1, state.messageHistory[i].message);
+    for(int i = 0; i < g_state.messageHistorySize; i++) {
+        if(g_state.messageHistory[i].sender == 0) {
+            ssd1306_draw_string(get_display(), 16, i*TEXT_SMALL_Y_MUT, 1, g_state.messageHistory[i].message);
         }
         else {
-            ssd1306_draw_string(get_display(), 0, i*TEXT_SMALL_Y_MUT, 1, state.messageHistory[i].message);
+            ssd1306_draw_string(get_display(), 0, i*TEXT_SMALL_Y_MUT, 1, g_state.messageHistory[i].message);
         }
     }
     ssd1306_draw_empty_square(get_display(), 0, 50, 127, 13);
-    ssd1306_draw_string(get_display(), 0, 52, 1, state.currentMessage);
+    ssd1306_draw_string(get_display(), 0, 52, 1, g_state.currentMessage);
     ssd1306_show(get_display());
 }
 

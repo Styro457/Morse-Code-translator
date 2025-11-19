@@ -15,10 +15,10 @@
 #define MOTION_STILL 50
 
 
-static void add_char_to_message(char character) {
-    state.currentMessage[state.currentMessageSize] = character;
-    state.currentMessageSize++;
-    state.currentMessage[state.currentMessageSize] = -1;
+static void addCharToMessage(char character) {
+    g_state.currentMessage[g_state.currentMessageSize] = character;
+    g_state.currentMessageSize++;
+    g_state.currentMessage[g_state.currentMessageSize] = 0;
     update_interface();
 }
 

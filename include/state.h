@@ -28,7 +28,7 @@ typedef struct {
 } State;
 
 // Global variable for the state
-extern State state;
+extern State g_state;
 
 void state_init();
 
