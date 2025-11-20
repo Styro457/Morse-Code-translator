@@ -4,7 +4,8 @@ typedef enum {
     MUSIC,
     DOT_SOUND,
     LINE_SOUND,
-    MENU_SOUND
+    MENU_SOUND,
+    ERROR_SOUND
 } Sound;
 
 void buzzer_task(void *arg);

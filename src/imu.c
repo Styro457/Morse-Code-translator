@@ -35,6 +35,11 @@ void init_imu() {
 }
 
 static void add_char_to_message(char character) {
+    // Check if there is no more space in the currentMessage buffer
+    if(g_state.currentMessageSize == MSG_BUFFER_SIZE) {
+        play_sound(ERROR_SOUND);
+        return;
+    }
     g_state.currentMessage[g_state.currentMessageSize] = character;
     g_state.currentMessageSize++;
     g_state.currentMessage[g_state.currentMessageSize] = 0;
