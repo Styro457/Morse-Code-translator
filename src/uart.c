@@ -23,6 +23,11 @@ void init_uart() {
 }
 
 void send_message() {
+  if(g_state.currentMessageSize == 0) {
+    play_sound(ERROR_SOUND);
+    return;
+  }
+  
   play_sound(MESSAGE_SENT);
 
   if(g_state.useUART) {
