@@ -50,7 +50,7 @@ void receive_task(void *arg) {
                 update_interface();
                 play_sound(MESSAGE_RECEIVED);
                 vTaskDelay(pdMS_TO_TICKS(100)); // Wait for new message
-                set_status(UART);
+                set_status(INPUT);
             }
             else if(index < INPUT_BUFFER_SIZE - 1){
                 line[index++] = (char)c;

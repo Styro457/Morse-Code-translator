@@ -48,7 +48,7 @@ void display_task(void *arg) {
                 case MAIN_MENU:
                     display_menu();
                     break;
-                case UART:
+                case INPUT:
                     display_chat();
                     break;
                 default:
@@ -103,7 +103,7 @@ void button_press(uint8_t button) {
     else {
         switch(selected_menu) {
             case 0:
-                set_status(UART);
+                set_status(INPUT);
                 play_sound(MESSAGE_RECEIVED);
                 break;
             case 1:
