@@ -34,10 +34,12 @@ void send_message() {
     for(int i = 0; i < g_state.currentMessageSize; i++) {
       uart_putc(uart0, g_state.currentMessage[i]);
     }
+    uart_putc(uart0, ' ');
+    uart_putc(uart0, ' ');
     uart_putc(uart0, '\n');
   }
   else {
-    printf("0: \"%s\"\n", g_state.currentMessage);
+    printf("%s  \n", g_state.currentMessage);
   }
   add_message_to_history(g_state.currentMessage, 0);
   g_state.currentMessage[0] = 0;
