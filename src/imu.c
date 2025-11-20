@@ -18,7 +18,7 @@
 
 #define MOTION_MAGNITUDE   40
 #define MOTION_TIME_MS     50
-#define COOLDOWN_MS        700
+#define COOLDOWN_MS        800
 
 #define DOMINANCE_F        1.3f
 #define ALPHA              0.25f
@@ -68,6 +68,7 @@ static void gesture(int8_t *command) {
             break;
         case 3:
             add_char_to_message(' ');
+            play_sound(SPACE_SOUND);
             break;
         case -3:
             if(g_state.currentMessageSize != 0) {

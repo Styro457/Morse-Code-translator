@@ -61,6 +61,10 @@ void buzzer_task(void *arg) {
                     buzzer_play_tone (500, 200);
                     vTaskDelay(pdMS_TO_TICKS(200));
                     break;
+                case SPACE_SOUND:
+                    buzzer_play_tone (100, 100);
+                    vTaskDelay(pdMS_TO_TICKS(100));
+                    break;
                 case MENU_SOUND:
                     buzzer_play_tone (800, 50);
                     vTaskDelay(pdMS_TO_TICKS(50));

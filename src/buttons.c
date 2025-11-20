@@ -13,7 +13,7 @@
 
 #define BUTTONS          2
 
-#define BTN_HOLD_MS      1400
+#define BTN_HOLD_MS      1000
 #define BTN_COOLDOWN_MS  200
 
 static SemaphoreHandle_t button_sem;

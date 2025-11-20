@@ -15,7 +15,7 @@ void state_init() {
     //state_mutex = xSemaphoreCreateMutex();
     g_state.status = MAIN_MENU;
     g_state.messageHistorySize = 0;
-    g_state.settings.debug = true;
+    g_state.settings.debug = false;
     g_state.settings.display_type = 1;
 }
 
@@ -57,9 +57,13 @@ void add_message_to_history(char *message, uint8_t sender) {
     }
 
     // Copy the message to messageHistory in the global state
-    strcpy(g_state.messageHistory[g_state.messageHistorySize].message, message);
-    g_state.messageHistory[g_state.messageHistorySize].sender = sender;
-    g_state.messageHistory[g_state.messageHistorySize].message_size = strlen(g_state.currentMessage);
+    Message *message_struct = &g_state.messageHistory[g_state.messageHistorySize];
+    strcpy(message_struct->message, message);
+    message_struct->sender = sender;
+
+    // Set message length
+    message_struct->message_size = strlen(message);
+
     g_state.messageHistorySize++;
     update_interface();
 }

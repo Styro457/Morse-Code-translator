@@ -4,6 +4,7 @@ typedef enum {
     MUSIC,
     DOT_SOUND,
     LINE_SOUND,
+    SPACE_SOUND,
     MENU_SOUND,
     ERROR_SOUND
 } Sound;

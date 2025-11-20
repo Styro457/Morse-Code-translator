@@ -1,3 +1,5 @@
+#include "interface.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -6,20 +8,15 @@
 #include <task.h>
 
 #include "tkjhat/sdk.h"
-#include "interface.h"
 #include "buttons.h"
 #include "state.h"
 #include "buzzer.h"
 #include "uart.h"
 
-#define MENU_ITEM_NUM 3
-#define SETTINGS_ITEM_NUM 3
-
 #define TEXT_X                 8
 #define TEXT_SELECTED_X        36
 #define TEXT_Y_MUT             16
 #define TEXT_SMALL_Y_MUT       8
-#define TEXT_SCALE             2
 
 static char menu[3][12] = {
 "USB",
@@ -91,7 +88,7 @@ static void display_menu() {
             strcat(message, "> ");
         }
         strcat(message, menu[i]);
-        ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, TEXT_SCALE, message);
+        ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, 2, message);
     }
     ssd1306_show(get_display());
 }
@@ -119,21 +116,63 @@ static void display_settings() {
 
 static void display_chat() {
     clear_display();
+
+    // Print Message History
+    int history_lines = 0;
     for(int i = 0; i < g_state.messageHistorySize; i++) {
-    char *message = g_state.messageHistory[i].message;
-    if(g_state.settings.display_type == 1) {
-        morse_to_text(message, translationBuffer);
-        message = translationBuffer;
+        // Get message from history
+        char *message = g_state.messageHistory[i].message;
+        int message_size = g_state.messageHistory[i].message_size;
+
+        // Translate the message if its enabled in settings
+        if(g_state.settings.display_type == 1) {
+            morse_to_text(message, translationBuffer);
+            message = translationBuffer;
+            message_size = strlen(message);
+        }
+
+        int y = history_lines*TEXT_SMALL_Y_MUT;
+
+        // Print the sender id
+        char sender[3] = {'0'+g_state.messageHistory[i].sender, ':', '\0'};
+        ssd1306_draw_string(get_display(), 0, y, 1, sender);
+        
+        // Print the message on multiple lines if its too long
+        if(message_size > CHAT_MESSAGE_MAX) {
+            char line[CHAT_MESSAGE_MAX+1];
+
+            uint8_t lines = message_size/(float)CHAT_MESSAGE_MAX;
+            if(message_size % CHAT_MESSAGE_MAX != 0) lines++;
+
+            history_lines += lines;
+
+            for(int j = 0; j < lines; j++) {
+                int start = j * CHAT_MESSAGE_MAX;
+                int len = j == lines-1 ? message_size - start : CHAT_MESSAGE_MAX;
+                memcpy(line, &message[start], len);
+                line[len] = '\0';
+                ssd1306_draw_string(get_display(), 16, y+(j*TEXT_SMALL_Y_MUT), 1, line);
+            }
+        }
+        // Print the message normally if its short enough
+        else {
+            ssd1306_draw_string(get_display(), 16, y, 1, message);
+            history_lines++;
+        }
     }
-    if(g_state.messageHistory[i].sender == 0) {
-        ssd1306_draw_string(get_display(), 16, i*TEXT_SMALL_Y_MUT, 1, message);
-    }
-    else {
-        ssd1306_draw_string(get_display(), 0, i*TEXT_SMALL_Y_MUT, 1, message);
-    }
-    }
+
+    // Draw chat box
     ssd1306_draw_empty_square(get_display(), 0, 50, 127, 13);
-    ssd1306_draw_string(get_display(), 0, 52, 1, g_state.currentMessage);
+
+    // Only display the last characters in the currentMessage if it exceeds the screen size
+    char *current_message = g_state.currentMessage;
+    if(g_state.currentMessageSize > CHAT_CUR_MESSAGE_MAX) {
+        current_message += g_state.currentMessageSize-CHAT_CUR_MESSAGE_MAX;
+    }
+
+    // Print current message
+    ssd1306_draw_string(get_display(), 0, 52, 1, current_message);
+
     ssd1306_show(get_display());
 }
 
