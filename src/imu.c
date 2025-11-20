@@ -57,7 +57,6 @@ static void gesture(int8_t *command) {
             break;
         case -3:
             send_message();
-            update_interface();
             play_sound(MESSAGE_SENT);
             break;
         default:

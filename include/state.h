@@ -22,7 +22,7 @@ typedef struct {
 
 typedef struct {
     // 0 you 1 other person
-    bool sender;
+    uint8_t sender;
     int message_size;
     char message[MSG_BUFFER_SIZE];
 } Message;
@@ -46,6 +46,8 @@ void state_init();
 void set_status(Status new_status);
 
 Status get_status();
+
+void add_message_to_history(char *message, uint8_t sender);
 
 void morse_to_text(const char *morseInput, char *result);
 

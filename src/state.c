@@ -5,6 +5,7 @@
 
 
 #include "state.h"
+#include "interface.h"
 
 State g_state;
 
@@ -44,6 +45,24 @@ const char* morse_table[] = {
     "-----", ".----", "..---", "...--", "....-",
     ".....", "-....", "--...", "---..", "----.",
 };
+
+void add_message_to_history(char *message, uint8_t sender) {
+    // Check if the message history is full.
+    // If it is full delete the first message and move everything back 1 index.
+    if(g_state.messageHistorySize == MSG_LIST_SIZE) {
+        for(int i = 0; i < MSG_LIST_SIZE-1; i++) {
+            g_state.messageHistory[i] = g_state.messageHistory[i+1];
+        }
+        g_state.messageHistorySize--;
+    }
+
+    // Copy the message to messageHistory in the global state
+    strcpy(g_state.messageHistory[g_state.messageHistorySize].message, message);
+    g_state.messageHistory[g_state.messageHistorySize].sender = sender;
+    g_state.messageHistory[g_state.messageHistorySize].message_size = strlen(g_state.currentMessage);
+    g_state.messageHistorySize++;
+    update_interface();
+}
 
 
 char morse_to_char(const char *morse) {

@@ -168,14 +168,6 @@ void button_press(uint8_t button) {
             set_status(MAIN_MENU);
         }
     }
-    if(button == 1) {
-        if(get_status() == MAIN_MENU) {
-            selected_menu = (selected_menu+1)%3;
-        }
-        else {
-            set_status(MAIN_MENU);
-        }
-    }
 
     // Update interface
     update = true;

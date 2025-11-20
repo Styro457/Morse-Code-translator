@@ -25,6 +25,7 @@ void init_uart() {
 }
 
 void send_message() {
+  play_sound(MESSAGE_RECEIVED);
   if(g_state.useUART) {
     for(int i = 0; i < g_state.currentMessageSize; i++) {
       uart_putc(uart0, g_state.currentMessage[i]);
@@ -34,13 +35,9 @@ void send_message() {
   else {
     printf("MSG: %s", g_state.currentMessage);
   }
-  strcpy(g_state.messageHistory[g_state.messageHistorySize].message, g_state.currentMessage);
-  g_state.messageHistory[g_state.messageHistorySize].sender = 0;
-  g_state.messageHistory[g_state.messageHistorySize].message_size = strlen(g_state.currentMessage);
-  g_state.messageHistorySize++;
+  add_message_to_history(g_state.currentMessage, 0);
   g_state.currentMessage[0] = 0;
   g_state.currentMessageSize = 0;
-  play_sound(MESSAGE_RECEIVED);
 }
 
 void receive_task(void *arg) {
@@ -70,21 +67,16 @@ void receive_task(void *arg) {
       }
     }
     if (receive){// I have received a character
-        printf("I AM RECEIVING :)))\n");
         set_status(RECEIVING);
         if (c == '\r') continue; // ignore CR, wait for LF if (ch == '\n') { line[len] = '\0';
         if (c == '\n'){
             // terminate and process the collected line
+            play_sound(MESSAGE_RECEIVED);
             line[index] = '\0'; 
             printf("__[RX]:\"%s\"__\n", line); //Print as debug in the output
             index = 0;
                 
-            strcpy(g_state.messageHistory[g_state.messageHistorySize].message, line);
-            g_state.messageHistory[g_state.messageHistorySize].sender = 1;
-            g_state.messageHistory[g_state.messageHistorySize].message_size = strlen(line);
-            g_state.messageHistorySize++;
-            update_interface();
-            play_sound(MESSAGE_RECEIVED);
+            add_message_to_history(line, 1);
             vTaskDelay(pdMS_TO_TICKS(100)); // Wait for new message
         }
         else if(index < INPUT_BUFFER_SIZE - 1){
@@ -92,8 +84,10 @@ void receive_task(void *arg) {
             vTaskDelay(pdMS_TO_TICKS(100));
         }
         else { //Overflow: print and restart the buffer with the new character. 
+            play_sound(MESSAGE_RECEIVED);
             line[INPUT_BUFFER_SIZE - 1] = '\0';
             printf("__[RX]:\"%s\"__\n", line);
+            add_message_to_history(line, 1);
             index = 0; 
             line[index++] = (char)c; 
             vTaskDelay(pdMS_TO_TICKS(100));
