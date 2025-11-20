@@ -1,5 +1,8 @@
 #include <FreeRTOS.h>
 #include <semphr.h>
+#include <stdio.h>
+#include <string.h>
+
 
 #include "state.h"
 
@@ -27,3 +30,46 @@ Status get_status() {
     //xSemaphoreGive(state_mutex);
     return current_status;
 }
+
+char morse_table[] = {
+    {'A', ".-"},    {'B', "-..."},  {'C', "-.-."},  {'D', "-.."},   {'E', "."},
+    {'F', "..-."},  {'G', "--."},   {'H', "...."},  {'I', ".."},    {'J', ".---"},
+    {'K', "-.-"},   {'L', ".-.."},  {'M', "--"},    {'N', "-."},    {'O', "---"},
+    {'P', ".--."},  {'Q', "--.-"},  {'R', ".-."},   {'S', "..."},   {'T', "-"},
+    {'U', "..-"},   {'V', "...-"},  {'W', ".--"},   {'X', "-..-"},  {'Y', "-.--"},
+    {'Z', "--.."},
+    
+    {'0', "-----"}, {'1', ".----"}, {'2', "..---"}, {'3', "...--"}, {'4', "....-"},
+    {'5', "....."}, {'6', "-...."}, {'7', "--..."}, {'8', "---.."}, {'9', "----."},
+    
+};
+
+
+char morse_to_char(const char *morse) {
+    for (int i = 0; i < 36; i++) {
+        if (strcmp(morse, morse_table[i]) == 0) {
+            if (i < 26) return 'A' + i; 
+            else return '0' + (i - 26);
+        }
+    }
+    return '?';
+}
+void morse_to_text(const char *morse_input, char *result) {
+    result[0] = '\0';
+    char buffer[500];
+    strcpy(buffer, morse_input);
+
+    char *token = strtok(buffer, " ");
+    while (token != NULL) {
+        if (strcmp(token, "/") == 0) {
+            strcat(result, " ");
+        } else {
+            char ch = morse_to_char(token);
+            int len = strlen(result);
+            result[len] = ch;
+            result[len + 1] = '\0';
+        }
+        token = strtok(NULL, " ");
+    }
+}
+

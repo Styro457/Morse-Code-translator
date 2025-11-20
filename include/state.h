@@ -43,4 +43,6 @@ void set_status(Status new_status);
 
 Status get_status();
 
+void morse_to_text(const char *morseInput, char *result);
+
 #endif
