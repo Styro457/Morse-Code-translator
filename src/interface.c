@@ -267,9 +267,11 @@ void button_press(uint8_t button, bool hold) {
         // Button 1 logic
         if(button == 1) {
             // Check if the current message is empty or the input is a button hold
-            // If it is, exit to main menu
+            // If it is, clear current message and exit to main menu
             if(g_state.currentMessageSize == 0 || hold) {
                 interface_index = 0;
+                g_state.currentMessageSize = 0;
+                g_state.currentMessage[0] = '\0';
                 set_status(MAIN_MENU);
             }
             else {
