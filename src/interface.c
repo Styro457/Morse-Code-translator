@@ -131,28 +131,54 @@ ssd1306_show(get_display());
 }
 
 void button_press(uint8_t button) {
-if(button == 1) {
+    // Main Menu
     if(get_status() == MAIN_MENU) {
-        selected_menu = (selected_menu+1)%3;
-    }
-    else {
-        switch(selected_menu) {
-            case 0:
-                g_state.useUART = false;
-                play_sound(MESSAGE_RECEIVED);
-                set_status(INPUT);
-                break;
-            case 1:
-                g_state.useUART = true;
-                play_sound(MESSAGE_RECEIVED);
-                set_status(INPUT);
-                break;
-            default:
-                //set_status(MAIN_MENU);
-                play_sound(MUSIC);
-                break;
+        if(button == 1) {
+            selected_menu = (selected_menu+1)%3;
         }
-update = true;
+        else {
+            switch(selected_menu) {
+                case 0:
+                    g_state.useUART = false;
+                    play_sound(MESSAGE_RECEIVED);
+                    set_status(INPUT);
+                    break;
+                case 1:
+                    g_state.useUART = true;
+                    play_sound(MESSAGE_RECEIVED);
+                    set_status(INPUT);
+                    break;
+                default:
+                    //set_status(MAIN_MENU);
+                    play_sound(MUSIC);
+                    break;
+            }
+        }
+    }
+
+
+    // Settings Menu
+    else if(get_status == SETTINGS) {
+
+    }
+
+    // Default Logic
+    else {
+        if(button == 1) {
+            set_status(MAIN_MENU);
+        }
+    }
+    if(button == 1) {
+        if(get_status() == MAIN_MENU) {
+            selected_menu = (selected_menu+1)%3;
+        }
+        else {
+            set_status(MAIN_MENU);
+        }
+    }
+
+    // Update interface
+    update = true;
 }
 
 void update_interface() {
