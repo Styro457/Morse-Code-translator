@@ -56,8 +56,10 @@ static void gesture(int8_t *command) {
             add_char_to_message(' ');
             break;
         case -3:
-            send_message();
-            play_sound(MESSAGE_SENT);
+            if(g_state.currentMessageSize != 0) {
+                send_message();
+                play_sound(MESSAGE_SENT);
+            }
             break;
         default:
             break;

@@ -50,6 +50,7 @@ void display_task(void *arg) {
     printf("Initializing display\n");
 
     while(1) {
+        // button_check will block the task for 500ms if no button is pressed.
         button_check();
         if(update) {
             update = false;
@@ -58,7 +59,10 @@ void display_task(void *arg) {
                     display_menu();
                     break;
                 case INPUT:
+                    // Stop input while updating the screen by setting status to RECEIVING
+                    set_status(RECEIVING);
                     display_chat();
+                    set_status(INPUT);
                     break;
                 case RECEIVING:
                     display_chat();
@@ -70,8 +74,6 @@ void display_task(void *arg) {
                     clear_display();
                     break;
             }
-            //Update the display
-            ssd1306_show(get_display());
         }
         vTaskDelay(pdMS_TO_TICKS(50));
     }
@@ -89,6 +91,7 @@ static void display_menu() {
         strcat(message, menu[i]);
         ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, TEXT_SCALE, message);
     }
+    ssd1306_show(get_display());
 }
 
 static void display_settings() {
@@ -109,6 +112,7 @@ static void display_settings() {
         }
         ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, 1, setting);
     }
+    ssd1306_show(get_display());
 }
 
 static void display_chat() {
@@ -151,8 +155,8 @@ void button_press(uint8_t button, bool hold) {
                     break;
                 case 2:
                     play_sound(MENU_SOUND);
-                    set_status(SETTINGS);
                     selected_menu = 0;
+                    set_status(SETTINGS);
                     break;
                 default:
                     //set_status(MAIN_MENU);

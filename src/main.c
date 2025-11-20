@@ -66,11 +66,11 @@ int main() {
                        1024, // (en) Size of the stack for this task (in words).
                              // Generally 1024 or 2048
                        NULL, // (en) Arguments of the task
-                       2,    // (en) Priority of this task
+                       6,    // (en) Priority of this task
                        &buzzerTask);
 
   // Display task
-  result = xTaskCreate(display_task, "display", DEFAULT_STACK_SIZE, NULL, 2,
+  result = xTaskCreate(display_task, "display", DEFAULT_STACK_SIZE, NULL, 3,
                        &displayTask);
 
   if (result != pdPASS) {
@@ -78,7 +78,7 @@ int main() {
     return 0;
   }
 
-  result = xTaskCreate(receive_task, "receiveTask", DEFAULT_STACK_SIZE, NULL, 5,
+  result = xTaskCreate(receive_task, "receiveTask", DEFAULT_STACK_SIZE, NULL, 4,
                        &receiveTask);
 
   if (result != pdPASS) {
@@ -86,7 +86,7 @@ int main() {
     return 0;
   }
 
-  result = xTaskCreate(imu_task, "imuTask", DEFAULT_STACK_SIZE, NULL, 4,
+  result = xTaskCreate(imu_task, "imuTask", DEFAULT_STACK_SIZE, NULL, 2,
                        &imuTask);
 
   if (result != pdPASS) {
