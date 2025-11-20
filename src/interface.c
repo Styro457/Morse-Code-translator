@@ -49,6 +49,7 @@ void display_task(void *arg) {
                     display_menu();
                     break;
                 case INPUT:
+                case RECEIVING:
                     display_chat();
                     break;
                 default:
