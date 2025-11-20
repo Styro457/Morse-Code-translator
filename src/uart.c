@@ -92,7 +92,6 @@ void receive_task(void *arg) {
           // Set status back to INPUT
           set_status(INPUT);
 
-          vTaskDelay(pdMS_TO_TICKS(200)); // Wait for new message
       }
       else if(index < INPUT_BUFFER_SIZE - 1){
           line[index++] = (char)c;
@@ -105,8 +104,6 @@ void receive_task(void *arg) {
           line[index++] = (char)c; 
       }
     }
-    else {
-        vTaskDelay(pdMS_TO_TICKS(300)); // Wait for new message
-    }
+    vTaskDelay(pdMS_TO_TICKS(200)); // Wait for new message
   }
 }
