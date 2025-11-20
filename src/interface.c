@@ -21,9 +21,13 @@
 #define TEXT_SCALE             2
 
 static char menu[3][12] = {
+    "USB",
     "UART",
-    "WiFi",
     "Settings"
+};
+
+static char settings[3][12] = {
+    "DISPLAY TYPE"
 };
 
 static volatile uint8_t selected_menu = 0;
@@ -35,6 +39,7 @@ static char translationBuffer[MSG_BUFFER_SIZE];
 
 static void display_menu();
 static void display_chat();
+static void display_settings();
 
 void display_task(void *arg) {
     (void)arg;
@@ -56,6 +61,9 @@ void display_task(void *arg) {
                     break;
                 case RECEIVING:
                     display_chat();
+                    break;
+                case SETTINGS:
+                    display_settings();
                     break;
                 default:
                     clear_display();
@@ -82,54 +90,75 @@ static void display_menu() {
     }
 }
 
-static void display_chat() {
+static void display_settings() {
     clear_display();
-    for(int i = 0; i < g_state.messageHistorySize; i++) {
-        char *message = g_state.messageHistory[i].message;
-        if(g_state.settings.DISPLAY_TYPE == 1) {
-            morse_to_text(message, translationBuffer);
-            message = translationBuffer;
+    uint32_t x = TEXT_X;
+    char setting[16];
+    for(uint8_t i = 0; i < 3; i++) {
+        setting[0] = '\0';
+        if(i == selected_menu) {
+            strcat(setting, "> ");
         }
-        if(g_state.messageHistory[i].sender == 0) {
-            ssd1306_draw_string(get_display(), 16, i*TEXT_SMALL_Y_MUT, 1, message);
+        strcat(setting, menu[i]);
+        if (g_state.settings.display_type){
+            strcat(setting, " MORSE");
         }
         else {
-            ssd1306_draw_string(get_display(), 0, i*TEXT_SMALL_Y_MUT, 1, message);
+            strcat(setting, " TEXT");
         }
+        ssd1306_draw_string(get_display(), 0, i*TEXT_Y_MUT, TEXT_SCALE, setting);
     }
-    ssd1306_draw_empty_square(get_display(), 0, 50, 127, 13);
-    ssd1306_draw_string(get_display(), 0, 52, 1, g_state.currentMessage);
-    ssd1306_show(get_display());
+}
+
+static void display_chat() {
+clear_display();
+for(int i = 0; i < g_state.messageHistorySize; i++) {
+    char *message = g_state.messageHistory[i].message;
+    if(g_state.settings.display_type == 1) {
+        morse_to_text(message, translationBuffer);
+        message = translationBuffer;
+    }
+    if(g_state.messageHistory[i].sender == 0) {
+        ssd1306_draw_string(get_display(), 16, i*TEXT_SMALL_Y_MUT, 1, message);
+    }
+    else {
+        ssd1306_draw_string(get_display(), 0, i*TEXT_SMALL_Y_MUT, 1, message);
+    }
+}
+ssd1306_draw_empty_square(get_display(), 0, 50, 127, 13);
+ssd1306_draw_string(get_display(), 0, 52, 1, g_state.currentMessage);
+ssd1306_show(get_display());
 }
 
 void button_press(uint8_t button) {
-    if(button == 1) {
-        if(get_status() == MAIN_MENU) {
-            selected_menu = (selected_menu+1)%3;
-        }
-        else {
-            set_status(MAIN_MENU);
-        }
+if(button == 1) {
+    if(get_status() == MAIN_MENU) {
+        selected_menu = (selected_menu+1)%3;
     }
     else {
-        switch(selected_menu) {
-            case 0:
-                set_status(INPUT);
-                play_sound(MESSAGE_RECEIVED);
-                break;
-            case 1:
-                //set_status(WAITING_INPUT);
-                play_sound(MESSAGE_SENT);
-                break;
-            default:
-                //set_status(MAIN_MENU);
-                play_sound(MUSIC);
-                break;
-        }
+        set_status(MAIN_MENU);
     }
-    update = true;
+}
+else {
+    if (get_status() == SETTINGS)
+    switch(selected_menu) {
+        case 0:
+            set_status(INPUT);
+            play_sound(MESSAGE_RECEIVED);
+            break;
+        case 1:
+            set_status(SETTINGS);
+            play_sound(MESSAGE_RECEIVED);
+            break;
+        default:
+            //set_status(MAIN_MENU);
+            play_sound(MUSIC);
+            break;
+    }
+}
+update = true;
 }
 
 void update_interface() {
-    update = true;
+update = true;
 }

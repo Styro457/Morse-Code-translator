@@ -10,12 +10,13 @@
 typedef enum {
     MAIN_MENU,
     INPUT,
-    RECEIVING
+    RECEIVING,
+    SETTINGS
 } Status;
 
 typedef struct {
     // 0 = morse, 1 = text
-    bool DISPLAY_TYPE;
+    bool display_type;
     bool debug;
 } Settings;
 

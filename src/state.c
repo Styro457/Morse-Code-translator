@@ -15,7 +15,7 @@ void state_init() {
     g_state.status = MAIN_MENU;
     g_state.messageHistorySize = 0;
     g_state.settings.debug = true;
-    g_state.settings.DISPLAY_TYPE = 1;
+    g_state.settings.display_type = 1;
 }
 
 
