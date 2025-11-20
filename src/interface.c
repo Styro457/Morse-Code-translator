@@ -136,26 +136,22 @@ if(button == 1) {
         selected_menu = (selected_menu+1)%3;
     }
     else {
-        set_status(MAIN_MENU);
-    }
-}
-else {
-    if (get_status() == SETTINGS)
-    switch(selected_menu) {
-        case 0:
-            set_status(INPUT);
-            play_sound(MESSAGE_RECEIVED);
-            break;
-        case 1:
-            set_status(SETTINGS);
-            play_sound(MESSAGE_RECEIVED);
-            break;
-        default:
-            //set_status(MAIN_MENU);
-            play_sound(MUSIC);
-            break;
-    }
-}
+        switch(selected_menu) {
+            case 0:
+                g_state.useUART = false;
+                play_sound(MESSAGE_RECEIVED);
+                set_status(INPUT);
+                break;
+            case 1:
+                g_state.useUART = true;
+                play_sound(MESSAGE_RECEIVED);
+                set_status(INPUT);
+                break;
+            default:
+                //set_status(MAIN_MENU);
+                play_sound(MUSIC);
+                break;
+        }
 update = true;
 }
 
