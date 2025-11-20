@@ -25,12 +25,12 @@
 
 void init_imu() {
     if (init_ICM42670() == 0) {
-        printf("ICM-42670P initialized successfully!\n");
+        printf("__ICM-42670P initialized successfully!__\n");
         if (ICM42670_start_with_default_values() != 0){
-            printf("ICM-42670P could not initialize accelerometer or gyroscope");
+            printf("__ICM-42670P could not initialize accelerometer or gyroscope__");
         }
     } else {
-        printf("Failed to initialize ICM-42670P.\n");
+        printf("__Failed to initialize ICM-42670P__\n");
     }
 }
 
@@ -107,7 +107,7 @@ void imu_task(void *pvParameters) {
             continue;
         }
         if (ICM42670_read_sensor_data(&accel[0], &accel[1], &accel[2], &gyro[0], &gyro[1], &gyro[2], &temp) != 0) {
-            printf("Failed to read imu data\n");
+            printf("__Failed to read imu data__\n");
             vTaskDelay(pdMS_TO_TICKS(TASK_DELAY));
             continue;
         }
@@ -123,7 +123,7 @@ void imu_task(void *pvParameters) {
 
 
         if(g_state.settings.debug) {
-        printf("Accel: X=%f, Y=%f, Z=%f | Gyro: X=%f, Y=%f, Z=%f, temp:%f\n",
+        printf("__Accel: X=%f, Y=%f, Z=%f | Gyro: X=%f, Y=%f, Z=%f, temp:%f__\n",
             filt_accel[0], filt_accel[1], filt_accel[2], filt_gyro[0], filt_gyro[1], filt_gyro[2], temp);
         }
 

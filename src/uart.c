@@ -84,7 +84,7 @@ void receive_task(void *arg) {
       if (c == '\n'){
           // terminate and process the collected line
           line[index] = '\0'; 
-          printf("1: \"%s\"__\n", line); //Print as debug in the output
+          printf("__[RX]:\"%s\"__\n", line); //Print as debug in the output
           index = 0;
                 
           add_message_to_history(line, 1);

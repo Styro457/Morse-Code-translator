@@ -60,7 +60,7 @@ void display_task(void *arg) {
 
     init_display();
     button_init();
-    printf("Initializing display\n");
+    printf("__Initializing display__\n");
 
     while(1) {
         // button_check will block the task for 500ms if no button is pressed.

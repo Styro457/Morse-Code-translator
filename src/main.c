@@ -62,7 +62,7 @@ int main() {
                        &displayTask);
 
   if (result != pdPASS) {
-    printf("Display Task creation failed \n");
+    printf("__Display Task creation failed__\n");
     return 0;
   }
 
@@ -70,7 +70,7 @@ int main() {
                        &receiveTask);
 
   if (result != pdPASS) {
-    printf("Receive Task creation failed \n");
+    printf("__Receive Task creation failed__\n");
     return 0;
   }
 
