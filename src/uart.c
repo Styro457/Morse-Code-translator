@@ -77,17 +77,17 @@ void receive_task(void *arg) {
       // If this is the first character, set status to RECEIVING to stop IMU task and play a sound
       if(get_status() != RECEIVING) {
         set_status(RECEIVING);
-        play_sound(MESSAGE_RECEIVED);
       }
 
       if (c == '\r') continue; // ignore CR, wait for LF if (ch == '\n') { line[len] = '\0';
       if (c == '\n'){
           // terminate and process the collected line
           line[index] = '\0'; 
-          printf("__[RX]:\"%s\"__\n", line); //Print as debug in the output
+          //printf("__[RX]:\"%s\"__\n", line); //Print as debug in the output
           index = 0;
                 
           add_message_to_history(line, 1);
+          play_sound(MESSAGE_RECEIVED);
 
           // Set status back to INPUT
           set_status(INPUT);
@@ -95,13 +95,22 @@ void receive_task(void *arg) {
       }
       else if(index < INPUT_BUFFER_SIZE - 1){
           line[index++] = (char)c;
+          if ((char)c == '.'){
+            play_sound(DOT_SOUND);
+          }
+          else if ((char)c == '-'){
+            play_sound(LINE_SOUND);
+          }
+          else if ((char)c == ' '){
+            play_sound(SPACE_SOUND);
+          }
+          vTaskDelay(400);
       }
       else { //Overflow: print and restart the buffer with the new character. 
           line[INPUT_BUFFER_SIZE - 1] = '\0';
           printf("__[RX]:\"%s\"__\n", line);
           add_message_to_history(line, 1);
           index = 0; 
-          line[index++] = (char)c; 
       }
     }
     vTaskDelay(pdMS_TO_TICKS(200)); // Wait for new message
