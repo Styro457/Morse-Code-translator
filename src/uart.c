@@ -60,13 +60,23 @@ void receive_task(void *arg) {
   int c;
   bool receive;
   while (1) {
+    // If status is not INPUT, sleep
+    if(get_status() != INPUT) {
+      vTaskDelay(pdMS_TO_TICKS(500));
+      continue;
+    }
+
     receive = false;
 
     // UART logic
     if(g_state.useUART) {
       if(uart_is_readable(uart0)) {
         c = uart_getc(uart0);
-        receive = true;
+
+        // Prevent reading if no character is sending
+        if(get_status() != RECEIVING && c != 0) {
+          receive = true;
+        }
       }
     }
 
