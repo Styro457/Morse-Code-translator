@@ -81,7 +81,7 @@ void receive_task(void *arg) {
       if(uart_is_readable(uart0)) {
         c = uart_getc(uart0);
 
-        // Prevent reading if no character is sending
+        // Prevent reading if no character is being sent
         if(get_status() == RECEIVING || c != 0) {
           receive = true;
         }

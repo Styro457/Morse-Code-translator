@@ -14,18 +14,25 @@
 #include "buzzer.h"
 #include "uart.h"
 
-// text location
+// X coordinate for options in menus
 #define TEXT_X                 8
+// X coordinate for the selected option in menus
 #define TEXT_SELECTED_X        36
+// Height used for scale 2 text
 #define TEXT_Y_MUT             16
+// Height used for scale 1 ytext
 #define TEXT_SMALL_Y_MUT       8
 
-// number of menu items
+// How many options in MAIN_MENU
 #define MENU_ITEM_NUM 3
+// How many options in SETTINGS
 #define SETTINGS_ITEM_NUM 3
 
+// Maximum amount of lines that can be displayed on the screen at once from history
 #define CHAT_LINES_MAX       6
+// Maximum length of the current message before starting to scroll
 #define CHAT_CUR_MESSAGE_MAX   20
+// Maximum characters that can be displayed on the screen in one line
 #define CHAT_MESSAGE_MAX       18
 
 // states nested in the menu state
@@ -35,37 +42,47 @@ typedef enum {
     CHAT
 } Menu;
 
-// main menu options
+// Labels for options in MAIN_MENU
 static char main_menu[3][8] = {
     "USB",
     "UART",
     "Settings"
 };
 
-// setting options
+// Labels for options in SETTINGS
 static char settings[3][14] = {
     "DISPLAY TYPE:",
     "DEBUG:",
     "Exit"
 };
 
+// Curent menu to be displayed
 static volatile Menu menu;
+
+// Index used in menus for scrolling or selection.
+// In MAIN_MENU and SETTINGS it is used for scrolling between the menu options.
+// In CHAT it is used for scrolling the message history.
 static volatile uint8_t interface_index = 0;
 
 // Store the total amount of lines for the displayed messages.
 // Used for scrolling up in the chat interface
 static volatile uint8_t history_lines = 0;
-// How many lines each message has
+
+// How many lines each message hasstatic void display_menu() {
+
 static uint8_t message_lines[MSG_LIST_SIZE];
 
+// Set internally to true when the interface changes. Changed by update_interface() function
 static bool update = true;
 
-static char translationBuffer[MSG_BUFFER_SIZE];
-
-
+// Dispaly the Main Menu.
 static void display_menu();
+// Display the Chat interface. Used for both USB and UART.
 static void display_chat();
+// Display the Settings menu.
 static void display_settings();
+// Function used to return to the main menu.
+// Only works if the global status is INPUT or already MENU.
 static bool exit_to_main_menu();
 
 void display_task(void *arg) {
@@ -80,8 +97,11 @@ void display_task(void *arg) {
     while(1) {
         // button_check will block the task for 500ms if no button is pressed.
         button_check();
+
+        // Check if the interface should be updated in order to prevent uncessary updates and flashing of the screen
         if(update) {
             update = false;
+            // Run the function for displaying the current Menu
             switch(menu) {
                 case MAIN_MENU:
                     display_menu();
@@ -214,11 +234,13 @@ static void display_chat() {
 void button_press(uint8_t button, bool hold) {
     // Main Menu
     if(menu == MAIN_MENU) {
+        // Scroll with left button
         if(button == 1) {
            interface_index = (interface_index+1)%MENU_ITEM_NUM;
         }
         else {
             switch(interface_index) {
+                // USB main-menu option
                 case 0:
                     // Delete chat history if mode is switched
                     if(g_state.useUART != false) {
@@ -230,6 +252,7 @@ void button_press(uint8_t button, bool hold) {
                     menu = CHAT;
                     set_status(INPUT);
                     break;
+                // UART main-menu option
                 case 1:
                     // Delete chat history if mode is switched
                     if(g_state.useUART != true) {
@@ -241,6 +264,7 @@ void button_press(uint8_t button, bool hold) {
                     menu = CHAT;
                     set_status(INPUT);
                     break;
+                // Setting main-menu option
                 case 2:
                     play_sound(MENU_SOUND);
                     interface_index = 0;
@@ -358,9 +382,11 @@ static bool exit_to_main_menu() {
     if(get_status() == RECEIVING) {
         return false;
     }
-    // reset current message
+
+    // Clear current message
     g_state.currentMessageSize = 0;
     g_state.currentMessage[0] = '\0';
+
     set_status(MENU);
     interface_index = 0;
     menu = MAIN_MENU;

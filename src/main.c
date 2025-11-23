@@ -1,3 +1,11 @@
+/* Module 2 Final Project, Tier 3
+
+Project made by:
+
+Ke Wu
+Radu Ursache
+Sultan Alshehry
+*/
 
 #include <stdio.h>
 #include <string.h>
@@ -17,23 +25,9 @@
 #include "imu.h"
 #include "state.h"
 
-/* Project made by:
-Ke Wu
-Radu Ursache
-Sultan Alshehry
-*/
 // Default stack size for the tasks. It can be reduced to 1024 if task is not
 // using lot of memory.
 #define DEFAULT_STACK_SIZE 2048
-
-static void example_task(void *arg) {
-  (void)arg;
-
-  for (;;) {
-    tight_loop_contents(); // Modify with application code here.
-    vTaskDelay(pdMS_TO_TICKS(2000));
-  }
-}
 
 int main() {
   stdio_init_all();
@@ -44,7 +38,6 @@ int main() {
   }*/
   init_hat_sdk();
   
-
   state_init();
 
   sleep_ms(300); // Wait some time so initialization of USB and hat is done.
@@ -67,23 +60,25 @@ int main() {
                        &displayTask);
 
   if (result != pdPASS) {
-    printf("__Display Task creation failed__\n");
+    debug("__Display Task creation failed__\n");
     return 0;
   }
 
+  // Receive task
   result = xTaskCreate(receive_task, "receiveTask", DEFAULT_STACK_SIZE, NULL, 4,
                        &receiveTask);
 
   if (result != pdPASS) {
-    printf("__Receive Task creation failed__\n");
+    debug("__Receive Task creation failed__\n");
     return 0;
   }
 
+  // IMU task
   result = xTaskCreate(imu_task, "imuTask", DEFAULT_STACK_SIZE, NULL, 3,
                        &imuTask);
 
   if (result != pdPASS) {
-    printf("IMU Task creation failed \n");
+    debug("IMU Task creation failed \n");
     return 0;
   }
 

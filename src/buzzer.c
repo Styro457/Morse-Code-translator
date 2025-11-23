@@ -10,6 +10,7 @@
 #include "tkjhat/sdk.h"
 #include "state.h"
 
+// Queue to add sounds to be playeed
 QueueHandle_t queue;
 
 int up_melody[] = {500, 600, 700, 800, 900, 1000, 1100, 1200};
@@ -27,7 +28,7 @@ void buzzer_task(void *arg) {
 
     //Initialize the buzzer
     init_buzzer();
-    printf("Initializing buzzer\n");
+    debug("Initializing buzzer\n");
     queue = xQueueCreate(5,sizeof(Sound));
 
     play_sound(MUSIC);
