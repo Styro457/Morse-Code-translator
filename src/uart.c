@@ -81,6 +81,7 @@ void receive_task(void *arg) {
       
       // If this is the first character, set status to RECEIVING to stop IMU task and play a sound
       if(get_status() != RECEIVING) {
+        play_sound(MESSAGE_RECEIVED);
         set_status(RECEIVING);
       }
 
@@ -92,8 +93,6 @@ void receive_task(void *arg) {
           index = 0;
                 
           add_message_to_history(line, 1);
-          play_sound(MESSAGE_RECEIVED);
-
           // Set status back to INPUT
           set_status(INPUT);
 
@@ -109,7 +108,7 @@ void receive_task(void *arg) {
           else if ((char)c == ' '){
             play_sound(SPACE_SOUND);
           }
-          vTaskDelay(400);
+          //vTaskDelay(400);
       }
       else { //Overflow: print and restart the buffer with the new character. 
           line[INPUT_BUFFER_SIZE - 1] = '\0';

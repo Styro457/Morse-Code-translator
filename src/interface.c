@@ -60,6 +60,7 @@ static char translationBuffer[MSG_BUFFER_SIZE];
 static void display_menu();
 static void display_chat();
 static void display_settings();
+static bool exit_to_main_menu();
 
 void display_task(void *arg) {
     (void)arg;
@@ -81,9 +82,14 @@ void display_task(void *arg) {
                     break;
                 case CHAT:
                     // Stop input while updating the screen by setting status to MENU
-                    set_status(MENU);
-                    display_chat();
-                    set_status(INPUT);
+                    if(get_status() == INPUT) {
+                        set_status(MENU);
+                        display_chat();
+                        set_status(INPUT);
+                    }
+                    else {
+                        display_chat();
+                    }
                     break;
                 case SETTINGS:
                     display_settings();
@@ -276,11 +282,7 @@ void button_press(uint8_t button, bool hold) {
             // Check if the current message is empty or the input is a button hold
             // If it is, clear current message and exit to main menu
             if(g_state.currentMessageSize == 0 || hold) {
-                interface_index = 0;
-                g_state.currentMessageSize = 0;
-                g_state.currentMessage[0] = '\0';
-                set_status(MENU);
-                menu = MAIN_MENU;
+                exit_to_main_menu();
             }
             else {
                 // Delete one character from the current message
@@ -335,4 +337,15 @@ void update_interface_message_history() {
         history_lines += message_lines[i];
     }
     interface_index = 0;
+}
+
+static bool exit_to_main_menu() {
+    if(get_status() == RECEIVING)
+        return false;
+    interface_index = 0;
+    g_state.currentMessageSize = 0;
+    g_state.currentMessage[0] = '\0';
+    set_status(MENU);
+    menu = MAIN_MENU;
+    return true;
 }
