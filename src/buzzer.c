@@ -49,21 +49,23 @@ void buzzer_task(void *arg) {
                     vTaskDelay(pdMS_TO_TICKS(100));
                     break;
                 case MUSIC:
-                    for (int i=0 ; i<10; i++){
+                    for (int i=0 ; i<4; i++){
                         buzzer_play_tone (melody[i], durations[i]);
                         vTaskDelay(pdMS_TO_TICKS(durations[i]));
                     }
+                    break;
                 case UP_MUSIC:
-                    for (int i=0 ; i<10; i++){
+                    for (int i=0 ; i<7; i++){
                         buzzer_play_tone (up_melody[i], 200);
                         vTaskDelay(pdMS_TO_TICKS(200));
-                    break;
                     }
+                    break;
                 case DOWN_MUSIC:
-                    for (int i=0 ; i<10; i++){
+                    for (int i=0 ; i<7; i++){
                         buzzer_play_tone (down_melody[i], 200);
                         vTaskDelay(pdMS_TO_TICKS(200));
                     }
+                    break;
                 case DOT_SOUND:
                     buzzer_play_tone (800, 50);
                     vTaskDelay(pdMS_TO_TICKS(50));
