@@ -19,6 +19,7 @@
 #define MOTION_MAGNITUDE   40
 #define MOTION_TIME_MS     50
 #define COOLDOWN_MS        800
+#define ORIENT_COOLDOWN_MS 500
 
 #define DOMINANCE_F        1.3f
 #define ALPHA              0.25f
@@ -95,12 +96,12 @@ void imu_task(void *pvParameters) {
 
     float gyro[3] = {0}, filt_gyro[3] = {0};
 
-    float delta_accel[3] = {0};
-
-
     // Start collection data here. Infinite loop. 
     TickType_t cooldown = 0;
     int8_t command = 0;
+
+    int8_t last_orientation = 0;
+    TickType_t orientation_cooldown = 0;
     while (1) {
         if(get_status() != INPUT || g_state.playing_music) {
             vTaskDelay(300);
@@ -115,21 +116,46 @@ void imu_task(void *pvParameters) {
 
         // Apply Exponential Moving Average (EMA) to remove noise
         for(int i = 0; i < 3; i++) {
-            delta_accel[i] = filt_accel[i];
             filt_accel[i] = ALPHA * accel[i] + (1.0f - ALPHA) * filt_accel[i];
-            delta_accel[i] = filt_accel[i] - delta_accel[i];
 
             filt_gyro[i] = ALPHA * gyro[i] + (1.0f - ALPHA) * filt_gyro[i];
         }
 
+        TickType_t now = xTaskGetTickCount();
+
+        // Check device orientation 
+        if(accel[1] > 0.96) {
+            if(last_orientation != 1) {
+                last_orientation = 1;
+                cooldown = now;
+            }
+            else if(cooldown != 0 && now - cooldown > pdMS_TO_TICKS(ORIENT_COOLDOWN_MS)) {
+                cooldown = 0;
+                play_sound(DOWN_MUSIC);
+            }
+        }
+        else if(accel[1] < -0.96) {
+            if(last_orientation != -1) {
+                last_orientation = -1;
+                cooldown = now;
+            }
+            else if(cooldown != 0 && now - cooldown > pdMS_TO_TICKS(ORIENT_COOLDOWN_MS)) {
+                cooldown = 0;
+                play_sound(UP_MUSIC);
+            }
+        }
+        else if(last_orientation != 0) {
+            last_orientation = 0;
+            orientation_cooldown = 0;
+        }
+
 
         if(g_state.settings.debug) {
-        printf("__Accel: X=%f, Y=%f, Z=%f | Gyro: X=%f, Y=%f, Z=%f, temp:%f__\n",
-            filt_accel[0], filt_accel[1], filt_accel[2], filt_gyro[0], filt_gyro[1], filt_gyro[2], temp);
+            printf("__Accel: X=%f, Y=%f, Z=%f | Gyro: X=%f, Y=%f, Z=%f, temp:%f__\n",
+                filt_accel[0], filt_accel[1], filt_accel[2], filt_gyro[0], filt_gyro[1], filt_gyro[2], temp);
         }
 
         int axis = get_dominant_axis(filt_gyro);
-        TickType_t now = xTaskGetTickCount();
 
         if(cooldown != 0) {
             if(now - cooldown >= pdMS_TO_TICKS(COOLDOWN_MS))
