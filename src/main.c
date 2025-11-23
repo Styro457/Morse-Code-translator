@@ -17,6 +17,11 @@
 #include "imu.h"
 #include "state.h"
 
+/* Project made by:
+Ke Wu
+Radu Ursache
+Sultan Alshehry
+*/
 // Default stack size for the tasks. It can be reduced to 1024 if task is not
 // using lot of memory.
 #define DEFAULT_STACK_SIZE 2048
