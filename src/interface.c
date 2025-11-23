@@ -224,6 +224,7 @@ void button_press(uint8_t button, bool hold) {
                         g_state.useUART = true;
                         clear_message_history();
                     }
+
                     play_sound(MENU_SOUND);
                     menu = CHAT;
                     set_status(INPUT);
@@ -340,12 +341,13 @@ void update_interface_message_history() {
 }
 
 static bool exit_to_main_menu() {
-    if(get_status() == RECEIVING)
+    if(get_status() == RECEIVING) {
         return false;
-    interface_index = 0;
+    }
     g_state.currentMessageSize = 0;
     g_state.currentMessage[0] = '\0';
     set_status(MENU);
+    interface_index = 0;
     menu = MAIN_MENU;
     return true;
 }
