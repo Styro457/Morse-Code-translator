@@ -128,6 +128,7 @@ void receive_task(void *arg) {
           index = 0; 
       }
     }
-    vTaskDelay(pdMS_TO_TICKS(200)); // Wait for new message
+    else
+      vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
