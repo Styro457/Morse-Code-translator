@@ -60,8 +60,8 @@ void receive_task(void *arg) {
   int c;
   bool receive;
   while (1) {
-    // If status is not INPUT, sleep
-    if(get_status() != INPUT) {
+    // If status is not INPUT or RECEIVING, sleep
+    if(get_status() != INPUT && get_status() != RECEIVING) {
       vTaskDelay(pdMS_TO_TICKS(500));
       continue;
     }
@@ -103,6 +103,7 @@ void receive_task(void *arg) {
           index = 0;
                 
           add_message_to_history(line, 1);
+          
           // Set status back to INPUT
           set_status(INPUT);
 
