@@ -36,10 +36,8 @@ void buzzer_task(void *arg) {
             g_state.playing_music = true;
             switch (nextSound) {
                 case MESSAGE_RECEIVED:
-                    buzzer_play_tone (400, 200);
-                    vTaskDelay(pdMS_TO_TICKS(200));
-                    buzzer_play_tone (600, 200);
-                    vTaskDelay(pdMS_TO_TICKS(200));
+                    buzzer_play_tone (50, 50);
+                    vTaskDelay(pdMS_TO_TICKS(60));
                     break;
                 case MESSAGE_SENT:
                     buzzer_play_tone (800, 50);
