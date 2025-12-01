@@ -5,7 +5,6 @@
 #include <string.h>
 
 #include <FreeRTOS.h>
-#include <semphr.h>
 #include <task.h>
 
 #include "tkjhat/sdk.h"
